@@ -3389,27 +3389,53 @@ function submitInspection(){
   var btn = document.querySelector('.submit-btn');
   if(btn){ btn.disabled=true; btn.textContent='Enviando...'; }
 
-  // Mandar fotos originales en el payload — el script las sube a Drive
-  // y guarda solo los links en el Sheet (las fotos no van al Sheet)
-  payload.fotos = todasFotos;
-  if(btn) btn.textContent = 'Enviando...';
+  // Subir fotos una por una al script, luego enviar formulario solo con URLs
+  var fotoLinks = [];
+  var placas = dv.placas || dv.codigo || 'SIN-PLACA';
 
-  fetch(SCRIPT_URL, {
-    method:'POST',
-    body: JSON.stringify(payload)
-  })
-  .then(function(r){ return r.json(); })
-  .then(function(res){
-    if(res.ok){
+  function subirSiguiente(i, done) {
+    if(i >= todasFotos.length){ done(); return; }
+    var foto = todasFotos[i];
+    if(btn) btn.textContent = 'Subiendo foto '+(i+1)+' de '+todasFotos.length+'...';
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        accion: 'subirFoto',
+        foto: foto,
+        placas: placas,
+        fecha: fecha
+      })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+      if(res.ok && res.url) fotoLinks.push({nombre: foto.nombre||'foto.jpg', url: res.url});
+      subirSiguiente(i+1, done);
+    })
+    .catch(function(){ subirSiguiente(i+1, done); });
+  }
+
+  subirSiguiente(0, function() {
+    // Enviar formulario sin base64, solo con URLs de Drive
+    payload.fotos = fotoLinks;
+    if(btn) btn.textContent = 'Guardando inspección...';
+
+    fetch(SCRIPT_URL, {
+      method:'POST',
+      body: JSON.stringify(payload)
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+      if(res.ok){
+        showScreen('screen-success');
+      } else {
+        alert('Error al enviar: '+(res.error||'desconocido'));
+        if(btn){ btn.disabled=false; btn.textContent='Enviar inspección'; }
+      }
+    })
+    .catch(function(){
+      guardarOffline(payload);
       showScreen('screen-success');
-    } else {
-      alert('Error al enviar: '+(res.error||'desconocido'));
-      if(btn){ btn.disabled=false; btn.textContent='Enviar inspección'; }
-    }
-  })
-  .catch(function(){
-    guardarOffline(payload);
-    showScreen('screen-success');
+    });
   });
 } // fin submitInspection
 
