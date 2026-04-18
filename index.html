@@ -277,7 +277,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="screen active" id="screen-welcome">
   <div class="hdr">
     <div class="brand">
-      <div class="logo"><img src="https://drive.google.com/thumbnail?id=1mBJh4DKgIi2JStB6BxZlVmUzqIoaDXcs&sz=w200" style="width:100%;height:100%;object-fit:contain;padding:3px"></div>
+      <div class="logo" onclick="resetApp()" style="cursor:pointer" title="Volver al inicio"><img src="https://drive.google.com/thumbnail?id=1mBJh4DKgIi2JStB6BxZlVmUzqIoaDXcs&sz=w200" style="width:100%;height:100%;object-fit:contain;padding:3px"></div>
       <div>
         <div class="brand-name">DAYUMATRUCK</div>
         <div class="brand-sub">Sistema de Gestión HSE</div>
@@ -339,7 +339,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="screen" id="screen-form">
   <div class="hdr no-print">
     <div class="brand">
-      <div class="logo"><img src="https://drive.google.com/thumbnail?id=1mBJh4DKgIi2JStB6BxZlVmUzqIoaDXcs&sz=w200" style="width:100%;height:100%;object-fit:contain;padding:3px"></div>
+      <div class="logo" onclick="resetApp()" style="cursor:pointer" title="Volver al inicio"><img src="https://drive.google.com/thumbnail?id=1mBJh4DKgIi2JStB6BxZlVmUzqIoaDXcs&sz=w200" style="width:100%;height:100%;object-fit:contain;padding:3px"></div>
       <div>
         <div class="brand-name" id="form-hdr-title">Inspección</div>
         <div class="brand-sub" id="form-hdr-sub">Dayuma Truck S.A.</div>
@@ -363,7 +363,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="screen" id="screen-summary">
   <div class="hdr no-print">
     <div class="brand">
-      <div class="logo"><img src="https://drive.google.com/thumbnail?id=1mBJh4DKgIi2JStB6BxZlVmUzqIoaDXcs&sz=w200" style="width:100%;height:100%;object-fit:contain;padding:3px"></div>
+      <div class="logo" onclick="resetApp()" style="cursor:pointer" title="Volver al inicio"><img src="https://drive.google.com/thumbnail?id=1mBJh4DKgIi2JStB6BxZlVmUzqIoaDXcs&sz=w200" style="width:100%;height:100%;object-fit:contain;padding:3px"></div>
       <div>
         <div class="brand-name">Resumen de Inspección</div>
         <div class="brand-sub">Dayuma Truck S.A. — HSE</div>
@@ -410,7 +410,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="screen" id="screen-success">
   <div class="hdr">
     <div class="brand">
-      <div class="logo"><img src="https://drive.google.com/thumbnail?id=1mBJh4DKgIi2JStB6BxZlVmUzqIoaDXcs&sz=w200" style="width:100%;height:100%;object-fit:contain;padding:3px"></div>
+      <div class="logo" onclick="resetApp()" style="cursor:pointer" title="Volver al inicio"><img src="https://drive.google.com/thumbnail?id=1mBJh4DKgIi2JStB6BxZlVmUzqIoaDXcs&sz=w200" style="width:100%;height:100%;object-fit:contain;padding:3px"></div>
       <div>
         <div class="brand-name">DAYUMATRUCK</div>
         <div class="brand-sub">Sistema de Gestión HSE</div>
@@ -3254,7 +3254,7 @@ function setStatus(v){
 }
 
 // URL del Apps Script — pegar aquí después de publicar
-var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby6q1t6E-YU6ZQzw6ZqchYIMadtJAfglOtPStXVrxH6NFnOydJpKM8Q_QrdpVSDpsLcgA/exec';
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxOtGCnC-nadK6VAv1LwrEmmt_YeCzSot93a6Z8aWZGtWw03VkHSx2J9O-XHz9KsE-CKg/exec';
 
 function submitInspection(){
   if(!inspStatus){alert('Por favor selecciona el estado de la unidad.');return;}
@@ -3389,74 +3389,37 @@ function submitInspection(){
   var btn = document.querySelector('.submit-btn');
   if(btn){ btn.disabled=true; btn.textContent='Enviando...'; }
 
-  // Comprimir fotos a 1200px 85% calidad — buena calidad, payload manejable
+  // Comprimir fotos a 1200px 80% antes de enviar
   function comprimirFoto(foto, cb) {
     var img = new Image();
     img.onload = function() {
-      var maxW = 1200, maxH = 1200;
-      var w = img.width, h = img.height;
-      if(w > maxW){ h = Math.round(h*maxW/w); w = maxW; }
-      if(h > maxH){ w = Math.round(w*maxH/h); h = maxH; }
-      var canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      cb({nombre: foto.nombre||'foto.jpg', dataUrl: canvas.toDataURL('image/jpeg', 0.85)});
-    };
-    img.onerror = function(){ cb(foto); };
-    img.src = foto.dataUrl;
-  }
-
-  function comprimirTodas(arr, cb) {
-    if(!arr.length){ cb([]); return; }
-    var result = [], pending = arr.slice();
-    function next() {
-      if(!pending.length){ cb(result); return; }
-      var f = pending.shift();
-      if(btn) btn.textContent = 'Preparando foto '+(arr.length-pending.length)+' de '+arr.length+'...';
-      comprimirFoto(f, function(fc){ result.push(fc); next(); });
-    }
-    next();
-  }
-
-  // Subir fotos una por una (sin base64 largo en payload principal)
-  var fotoLinks = [];
-  function subirFoto(i, done) {
-    if(i >= todasFotos.length){ done(); return; }
-    var foto = todasFotos[i];
-    if(btn) btn.textContent = 'Subiendo foto '+(i+1)+' de '+todasFotos.length+'...';
-    // Comprimir a 1600px 90% — buena calidad
-    var img = new Image();
-    img.onload = function() {
-      var maxW=1600, maxH=1600, w=img.width, h=img.height;
+      var maxW=1200, maxH=1200, w=img.width, h=img.height;
       if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
       if(h>maxH){w=Math.round(w*maxH/h);h=maxH;}
       var canvas=document.createElement('canvas');
       canvas.width=w; canvas.height=h;
       canvas.getContext('2d').drawImage(img,0,0,w,h);
-      var compressed = canvas.toDataURL('image/jpeg', 0.90);
-      fetch(SCRIPT_URL, {
-        method:'POST',
-        body: JSON.stringify({
-          accion:'subirFoto',
-          foto:{nombre:foto.nombre||'foto.jpg', dataUrl:compressed},
-          placas: dv.placas||dv.codigo||'SIN-PLACA',
-          fecha: fecha
-        })
-      })
-      .then(function(r){return r.json();})
-      .then(function(res){
-        if(res.ok&&res.url) fotoLinks.push({nombre:foto.nombre||'foto.jpg', url:res.url});
-        subirFoto(i+1, done);
-      })
-      .catch(function(){ subirFoto(i+1, done); });
+      cb({nombre:foto.nombre||'foto.jpg', dataUrl:canvas.toDataURL('image/jpeg',0.80)});
     };
-    img.onerror = function(){ subirFoto(i+1, done); };
-    img.src = foto.dataUrl;
+    img.onerror=function(){cb(foto);};
+    img.src=foto.dataUrl;
   }
 
-  subirFoto(0, function() {
-    payload.fotos = fotoLinks;
-    if(btn) btn.textContent = 'Guardando inspección...';
+  function comprimirTodas(arr, cb) {
+    if(!arr.length){cb([]);return;}
+    var res=[], pend=arr.slice();
+    function next(){
+      if(!pend.length){cb(res);return;}
+      var f=pend.shift();
+      if(btn) btn.textContent='Preparando foto '+(arr.length-pend.length)+' de '+arr.length+'...';
+      comprimirFoto(f,function(fc){res.push(fc);next();});
+    }
+    next();
+  }
+
+  comprimirTodas(todasFotos, function(fotosComp) {
+    payload.fotos = fotosComp;
+    if(btn) btn.textContent = 'Enviando...';
     fetch(SCRIPT_URL, {
       method:'POST',
       body: JSON.stringify(payload)
@@ -3523,13 +3486,7 @@ function showScreen(id){
 }
 
 function resetApp(){
-  ST={};currentInspType=null;currentForm=null;currentTab=0;inspStatus=null;
-  document.querySelectorAll('.insp-card').forEach(c=>c.classList.remove('selected'));
-  document.getElementById('sel-inspector').value='';
-  document.getElementById('otro-inspector-wrap').style.display='none';
-  document.getElementById('start-btn').disabled=true;
-  document.getElementById('start-btn-text').textContent='Selecciona inspector e inspección';
-  showScreen('screen-welcome');
+  window.location.reload();
 }
 
 function initDate(){
