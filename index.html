@@ -3418,10 +3418,45 @@ function submitInspection(){
     next();
   }
 
-  comprimirTodas(todasFotos, function(fotosComp) {
-    payload.fotos = fotosComp;
-    if(btn) btn.textContent = 'Enviando...';
+  // Subir fotos una por una (sin base64 largo en payload principal)
+  var fotoLinks = [];
+  function subirFoto(i, done) {
+    if(i >= todasFotos.length){ done(); return; }
+    var foto = todasFotos[i];
+    if(btn) btn.textContent = 'Subiendo foto '+(i+1)+' de '+todasFotos.length+'...';
+    // Comprimir a 1600px 90% — buena calidad
+    var img = new Image();
+    img.onload = function() {
+      var maxW=1600, maxH=1600, w=img.width, h=img.height;
+      if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
+      if(h>maxH){w=Math.round(w*maxH/h);h=maxH;}
+      var canvas=document.createElement('canvas');
+      canvas.width=w; canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      var compressed = canvas.toDataURL('image/jpeg', 0.90);
+      fetch(SCRIPT_URL, {
+        method:'POST',
+        body: JSON.stringify({
+          accion:'subirFoto',
+          foto:{nombre:foto.nombre||'foto.jpg', dataUrl:compressed},
+          placas: dv.placas||dv.codigo||'SIN-PLACA',
+          fecha: fecha
+        })
+      })
+      .then(function(r){return r.json();})
+      .then(function(res){
+        if(res.ok&&res.url) fotoLinks.push({nombre:foto.nombre||'foto.jpg', url:res.url});
+        subirFoto(i+1, done);
+      })
+      .catch(function(){ subirFoto(i+1, done); });
+    };
+    img.onerror = function(){ subirFoto(i+1, done); };
+    img.src = foto.dataUrl;
+  }
 
+  subirFoto(0, function() {
+    payload.fotos = fotoLinks;
+    if(btn) btn.textContent = 'Guardando inspección...';
     fetch(SCRIPT_URL, {
       method:'POST',
       body: JSON.stringify(payload)
