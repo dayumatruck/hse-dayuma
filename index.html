@@ -3389,35 +3389,38 @@ function submitInspection(){
   var btn = document.querySelector('.submit-btn');
   if(btn){ btn.disabled=true; btn.textContent='Enviando...'; }
 
-  // Subir fotos una por una al script, luego enviar formulario solo con URLs
-  var fotoLinks = [];
-  var placas = dv.placas || dv.codigo || 'SIN-PLACA';
-
-  function subirSiguiente(i, done) {
-    if(i >= todasFotos.length){ done(); return; }
-    var foto = todasFotos[i];
-    if(btn) btn.textContent = 'Subiendo foto '+(i+1)+' de '+todasFotos.length+'...';
-    fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        accion: 'subirFoto',
-        foto: foto,
-        placas: placas,
-        fecha: fecha
-      })
-    })
-    .then(function(r){ return r.json(); })
-    .then(function(res){
-      if(res.ok && res.url) fotoLinks.push({nombre: foto.nombre||'foto.jpg', url: res.url});
-      subirSiguiente(i+1, done);
-    })
-    .catch(function(){ subirSiguiente(i+1, done); });
+  // Comprimir fotos a 1200px 85% calidad — buena calidad, payload manejable
+  function comprimirFoto(foto, cb) {
+    var img = new Image();
+    img.onload = function() {
+      var maxW = 1200, maxH = 1200;
+      var w = img.width, h = img.height;
+      if(w > maxW){ h = Math.round(h*maxW/w); w = maxW; }
+      if(h > maxH){ w = Math.round(w*maxH/h); h = maxH; }
+      var canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      cb({nombre: foto.nombre||'foto.jpg', dataUrl: canvas.toDataURL('image/jpeg', 0.85)});
+    };
+    img.onerror = function(){ cb(foto); };
+    img.src = foto.dataUrl;
   }
 
-  subirSiguiente(0, function() {
-    // Enviar formulario sin base64, solo con URLs de Drive
-    payload.fotos = fotoLinks;
-    if(btn) btn.textContent = 'Guardando inspección...';
+  function comprimirTodas(arr, cb) {
+    if(!arr.length){ cb([]); return; }
+    var result = [], pending = arr.slice();
+    function next() {
+      if(!pending.length){ cb(result); return; }
+      var f = pending.shift();
+      if(btn) btn.textContent = 'Preparando foto '+(arr.length-pending.length)+' de '+arr.length+'...';
+      comprimirFoto(f, function(fc){ result.push(fc); next(); });
+    }
+    next();
+  }
+
+  comprimirTodas(todasFotos, function(fotosComp) {
+    payload.fotos = fotosComp;
+    if(btn) btn.textContent = 'Enviando...';
 
     fetch(SCRIPT_URL, {
       method:'POST',
