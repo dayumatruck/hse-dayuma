@@ -3694,8 +3694,8 @@ function buildSummary(){
   }
 
   // ── Conteo B/R/M para hse42 (arneses) ──
-  var bueno=0, regular=0, malo=0, noAplica=0, noDisp=0;
-  var itemsMalos = []; // para mostrar en resumen
+  var bueno=0, regular=0, malo=0;
+  var itemsMalos = [];
   if(fk==='hse42'){
     currentForm.tabs.forEach(function(tab){
       if(!tab.isArnes) return;
@@ -3704,15 +3704,16 @@ function buildSummary(){
         var arId='arnes_'+tabIdx+'_'+ar.num;
         var st=ST[arId]||{};
         var cols=st.cols||{};
-        var vals=Object.values(cols).filter(function(v){return v;});
-        if(vals.length===0) return;
-        var estadoGen = vals.some(function(v){return v==='M';}) ? 'MALO'
-          : vals.some(function(v){return v==='R';}) ? 'REGULAR' : 'BUENO';
+        // Solo vals que sean B, R o M (ignorar N/A, N/D y vacíos)
+        var valsEfectivos = Object.values(cols).filter(function(v){
+          return v==='B'||v==='R'||v==='M';
+        });
+        if(valsEfectivos.length===0) return; // arnés sin evaluar, no contar
+        var estadoGen = valsEfectivos.some(function(v){return v==='M';}) ? 'MALO'
+          : valsEfectivos.some(function(v){return v==='R';}) ? 'REGULAR' : 'BUENO';
         if(estadoGen==='BUENO') bueno++;
         else if(estadoGen==='REGULAR'){ regular++; itemsMalos.push({codigo:st.codigo||'Arnés '+(ar.num), estado:'REGULAR', obs:st.obs||''}); }
-        else if(estadoGen==='MALO'){ malo++; itemsMalos.push({codigo:st.codigo||'Arnés '+(ar.num), estado:'MALO', obs:st.obs||''}); }
-        var allVals = Object.values(cols);
-        allVals.forEach(function(v){ if(v==='N/A') noAplica++; else if(v==='N/D') noDisp++; });
+        else { malo++; itemsMalos.push({codigo:st.codigo||'Arnés '+(ar.num), estado:'MALO', obs:st.obs||''}); }
       });
     });
   }
