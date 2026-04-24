@@ -391,6 +391,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div style="margin-top:14px">
       <label class="field-label" style="margin-bottom:5px;display:block">Novedades adicionales</label>
       <textarea class="extra-nov" rows="3" id="novedades-extra" placeholder="Novedades adicionales que no estén en el checklist..."></textarea>
+      <div style="margin-top:8px">
+        <label id="nov-foto-btn" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border:1.5px dashed rgba(0,0,0,0.18);border-radius:8px;background:#eef3fb;color:#1a4a7d;font-size:11px;font-weight:600;cursor:pointer">
+          📷 Agregar fotos de novedad
+          <input type="file" id="nov-foto-inp" accept="image/*" multiple style="display:none">
+        </label>
+        <div id="nov-foto-previews" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px"></div>
+      </div>
     </div>
 
     <div style="margin-top:14px">
@@ -403,6 +410,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
     <button class="submit-btn" onclick="submitInspection()">Enviar inspección</button>
     <button class="submit-btn" style="background:var(--bl);margin-top:8px" onclick="printInspection()">🖨️ Imprimir / Guardar PDF</button>
+    <button class="submit-btn" style="background:#25D366;margin-top:8px" onclick="enviarWhatsApp()">📲 Notificación WhatsApp</button>
   </div>
 </div>
 
@@ -446,6 +454,7 @@ const INSP_TYPES = [
   {id:'hse81',       code:'HSE-81', ver:'1.0', fecha:'01/02/2026', name:'Hidrogrúa',         desc:'Boom articulado',   icon:'🔧', color:'#e8eaf6', formKey:'hse81'},
   {id:'hse43',       code:'HSE-43', ver:'4.0', fecha:'15/08/2024', name:'Equipos de Amarre', desc:'Fajas/cadenas',     icon:'⛓️', color:'#fce4ec', formKey:'hse43'},
   {id:'hse42',       code:'HSE-42', ver:'4.0', fecha:'07/04/2026', name:'Arnés y Línea Vida',desc:'EPP altura',        icon:'🦺', color:'#e0f7fa', formKey:'hse42'},
+  {id:'hse86',       code:'HSE-86', ver:'1.0', fecha:'21/04/2026', name:'Mangueras Vacuum',  desc:'Insp. visual',      icon:'🔩', color:'#e8f5ee', formKey:'hse86'},
 ];
 
 // ============================================================
@@ -598,7 +607,7 @@ hse16: {
       name:'Acople y Semi-Remolque', color:'gray',
       note:'Camas altas: 10 fajas 4", 8 rachet cadena, 8 cadenas 3/8"×6m. Camas bajas: 4 fajas 4", 6 rachet cadena, 6 cadenas 3/8"×6m. Rígidos: 6 fajas 4", 6 rachets fajas 4", 4 rachets cadena, 4 cadenas 3/8"×6m. SHAYA mensualizado: 14 fajas 4", 14 rache fajas 4", 8 tensores, 10 eslingas nylon 4" c/malacates, 8 cadenas acero 3/8" long. 5.40m.',
       items:[
-        {l:'Placa del semiremolque'},
+        {l:'Placa del semiremolque', val:true, valLabel:'Nº Placa'},
         {l:'Líneas de aire y eléctricas conectadas correctamente'},
         {l:'Plataforma con espaldar para carga: 1.80M'},
         {l:'Escaleras (con apoyamanos) de acceso + estribos, corrales metálicos desmontables y carpa dividida en dos partes'},
@@ -657,6 +666,84 @@ hse16: {
         {l:'Kit de primeros auxilios / Botiquín'},
         {l:'Kit de herramientas'},
         {l:'Equipo de carretera (gata, llave tuerca)'},
+      ]
+    },
+    {
+      name:'Inspección Kits (HSE-06)', color:'blue', isKitDetallado:true,
+      note:'DYT-R-HSE-06 V2.0 | Fecha de aprobación: 08/04/2026 — Inspección detallada de contenido de kits.',
+      subkits:[
+        {
+          nombre:'Kit de Herramientas y Carretera',
+          items:[
+            {l:'Alicate', qty:'1 unidad'},
+            {l:'Arrestallamas', qty:'1 unidad'},
+            {l:'Cables pasa corriente', qty:'1 unidad'},
+            {l:'Cabo ½"', qty:'15 metros'},
+            {l:'Cabo 1/4"', qty:'15 metros'},
+            {l:'Destornillador estrella - plano', qty:'1 x C/U'},
+            {l:'Juego de Llaves mixtas 9 - 14 mm', qty:'1 Juego'},
+            {l:'Linterna + batería de repuesto', qty:'1 Unidad'},
+            {l:'Llave francesa pico', qty:'1 unidad'},
+            {l:'Manguera neumática con accesorios completos', qty:'1 unidad'},
+            {l:'Medidor de presión de aire', qty:'1 unidad'},
+            {l:'Playo', qty:'1 unidad'},
+            {l:'Profundímetro (medidor espesor de labrado)', qty:'1 unidad'},
+            {l:'Taipe', qty:'1 rollo'},
+          ]
+        },
+        {
+          nombre:'Kit de Derrames',
+          items:[
+            {l:'Aserrín o Polvo absorbente', qty:'10 kg'},
+            {l:'Balde plástico mediano', qty:'1 unidad'},
+            {l:'Barreta', qty:'1 unidad'},
+            {l:'Chaleco reflectivo', qty:'1 unidad'},
+            {l:'Cinta de peligro', qty:'50 metros'},
+            {l:'Escoba', qty:'1 unidad'},
+            {l:'Fundas plásticas 1 quintal', qty:'20 unidades'},
+            {l:'Gafas de seguridad', qty:'1 unidad'},
+            {l:'Guantes de nitrilo 13"', qty:'2 pares'},
+            {l:'Guantes de pupos', qty:'2 pares'},
+            {l:'Guantes Napa / Cuero', qty:'2 pares'},
+            {l:'Pala', qty:'1 unidad'},
+            {l:'Pala Antichispa', qty:'1 unidad'},
+            {l:'Paños absorbentes', qty:'20 unidades'},
+            {l:'Pico', qty:'1 unidad'},
+            {l:'Salchicha absorbente 3"', qty:'2 unidades'},
+            {l:'Saquillos sin logotipo', qty:'10 unidades'},
+          ]
+        },
+        {
+          nombre:'Kit de Primeros Auxilios',
+          items:[
+            {l:'Agua oxigenada 12 ml', qty:'1 unidad', cad:true},
+            {l:'Aplicadores de copitos (cotonetes)', qty:'10 unidades', cad:true},
+            {l:'Baja lenguas', qty:'10 unidades', cad:true},
+            {l:'Bolsas plásticas medianas de sellado manual (tipo zip lock)', qty:'2 unidades', cad:true},
+            {l:'Curitas', qty:'20 unidades', cad:true},
+            {l:'Esparadrapo transparente 1" x 3"', qty:'1 unidad', cad:true},
+            {l:'Gasas de 3x3" — Individuales no estériles', qty:'10 unidades', cad:true},
+            {l:'Rollos de gasa', qty:'2 unidades', cad:true},
+            {l:'Pares de guantes quirúrgicos no estériles', qty:'2 unidades', cad:true},
+            {l:'Parches oculares', qty:'2 unidades', cad:true},
+            {l:'Tijera de trauma', qty:'1 unidad', cad:true},
+            {l:'Toallas higiénicas', qty:'5 unidades', cad:true},
+            {l:'Vendaje elástico de 3" x 5 yardas', qty:'3 unidades', cad:true},
+            {l:'Vendas triangulares', qty:'4 unidades', cad:true},
+            {l:'Protector RCP', qty:'1 unidad', cad:true},
+          ]
+        },
+        {
+          nombre:'Kit de Investigación de Accidentes',
+          items:[
+            {l:'Cámara fotográfica desechable / celular del vehículo', qty:'1 unidad'},
+            {l:'Cuaderno pequeño espiral', qty:'1 unidad'},
+            {l:'Flexómetro 5 m', qty:'1 unidad'},
+            {l:'Marcador permanente negro', qty:'2 unidades'},
+            {l:'Bolsas tipo Ziplock medianas', qty:'6 unidades'},
+            {l:'Tizas para pavimento industrial', qty:'5 unidades'},
+          ]
+        },
       ]
     },
   ]
@@ -791,7 +878,7 @@ hse16shaya: {
       name:'Acople y Semi-Remolque', color:'gray',
       note:'SHAYA: 14 fajas 4", 14 rache fajas 4", 8 tensores, 10 eslingas nylon 4" c/malacates, 8 cadenas acero 3/8" long. 5.40m.',
       items:[
-        {l:'Placa del semiremolque'},
+        {l:'Placa del semiremolque', val:true, valLabel:'Nº Placa'},
         {l:'Líneas de aire y eléctricas conectadas correctamente'},
         {l:'Plataforma con espaldar para carga: 1.80M'},
         {l:'Escaleras (con apoyamanos) de acceso + estribos, corrales metálicos desmontables y carpa dividida en dos partes'},
@@ -2148,7 +2235,7 @@ hse81: {
       name:'Acople y Semi-Remolque', color:'gray',
       note:'Aplica para unidades articuladas.',
       items:[
-        {l:'Placa del semiremolque'},
+        {l:'Placa del semiremolque', val:true, valLabel:'Nº Placa'},
         {l:'Líneas de Aire y Eléctricas Conectadas Correctamente'},
         {l:'Plataforma con Espaldar Para Carga: 1.80M'},
         {l:'Escaleras (con apoyamanos) de acceso + estribos, corrales metálicos desmontables y carpa dividida en dos partes'},
@@ -2260,7 +2347,7 @@ hse43: {
   ],
   tabs: [
     {
-      name:'Parámetros a Inspeccionar', color:'green',
+      name:'Parámetros a Inspeccionar', color:'green', isParam:true,
       note:'Verificar cada parámetro en todos los elementos. Entidad Certificadora y N° Guía/Reporte se registran al final de cada sección.',
       items:[
         {l:'Legibilidad de la identificación'},
@@ -2298,6 +2385,44 @@ hse43: {
 },
 
 // ============================================================
+// HSE-86: INSPECCIÓN VISUAL DE MANGUERAS DE VACUUM
+// ============================================================
+hse86: {
+  title: 'Inspección Visual de Mangueras de Vacuum',
+  code: 'DYT-R-HSE-86',
+  version: '1.0',
+  fecha: '21/04/2026',
+  datosExtras: [
+    {id:'placas',    label:'Placa',               type:'text',   placeholder:'Ej: QAA1545'},
+    {id:'tipoveh',   label:'Tipo de Vehículo',    type:'select', options:['Vacuum']},
+    {id:'conductor', label:'Nombre del Conductor',type:'text',   placeholder:'Nombre completo'},
+    {id:'lugar',     label:'Lugar de Inspección', type:'select', options:['DYT - Coca','SHAYA','ORION','ANDES','ENAP','PCR','FRONTERA','GRAN TIERRA','PETROBELL','CSSFD']},
+  ],
+  tabs: [
+    {
+      name:'Parámetros a Inspeccionar', color:'blue', isParam:true,
+      note:'Verificar cada parámetro en todos los elementos antes de registrar el estado individual de cada manguera.',
+      items:[
+        {l:'Estado físico general de la manguera (sin cortes, desgaste excesivo, deformaciones)'},
+        {l:'Revisión de recubrimiento externo (sin agrietamientos, sin desprendimiento)'},
+        {l:'Integridad de las conexiones, acoples, tapas (sin trizaduras, sin corrosión)'},
+        {l:'Etiquetado y trazabilidad (código, lote, fecha de fabricación)'},
+        {l:'Flexibilidad y ausencia de rigidez anormal, ampollamiento'},
+        {l:'Existencia de sellos, empaques'},
+        {l:'Almacenamiento adecuado'},
+        {l:'Tapas de las tomas del tanque sujetas con cadenas'},
+      ]
+    },
+    {
+      name:'Mangueras', color:'teal', isManguera:true,
+      note:'Estado: BUENO ✓ | MALO ✗. Registrar Código, Capacidad y Dimensiones de cada manguera.',
+      cantMax: 6,
+      cols: ['Código','Capacidad','Dimensiones'],
+    },
+  ]
+},
+
+// ============================================================
 // HSE-42: INSPECCIÓN DE ARNÉS Y LÍNEA DE VIDA (INDEPENDIENTE)
 // ============================================================
 hse42: {
@@ -2324,12 +2449,97 @@ hse42: {
 // ============================================================
 // APP STATE
 // ============================================================
+// ============================================================
+// BASE DE DATOS DE FLOTA — Dayuma Truck S.A.
+// ============================================================
+const FLOTA = [
+  {placa:'QAA2072', conductor:'MAURICIO HERRERA',  tipo:'Volqueta'},
+  {placa:'QAA1532', conductor:'CARLOS SALAZAR',    tipo:'Volqueta'},
+  {placa:'QAA2026', conductor:'JOSÉ POMA',         tipo:'Volqueta'},
+  {placa:'QAA2081', conductor:'SIMON REASCOS',     tipo:'Volqueta'},
+  {placa:'QAA1374', conductor:'HENRY BEDOYA',      tipo:'Volqueta'},
+  {placa:'QAA2740', conductor:'ROBINSON GAVILANEZ',tipo:'Volqueta'},
+  {placa:'QAA2763', conductor:'ANGEL CALVA',       tipo:'Volqueta'},
+  {placa:'QAA2982', conductor:'FREDDY CANDO',      tipo:'Volqueta'},
+  {placa:'QAA2104', conductor:'LUIS GARCIA',       tipo:'Volqueta'},
+  {placa:'QAA1709', conductor:'CARLOS LAPO',       tipo:'Volqueta'},
+  {placa:'QAA2080', conductor:'EDISON MUIMA',      tipo:'Volqueta'},
+  {placa:'QAA2079', conductor:'JUAN ROJAS',        tipo:'Volqueta'},
+  {placa:'QAA3011', conductor:'EDGAR MUIMA',       tipo:'Volqueta'},
+  {placa:'AAA6764', conductor:'XAVIER MENDOZA',    tipo:'Volqueta'},
+  {placa:'PAE2675', conductor:'DAVID VALENCIA',    tipo:'Volqueta'},
+  {placa:'QAA3306', conductor:'JOSÉ POMA',         tipo:'Volqueta'},
+  {placa:'QAA2166', conductor:'HENRY BEDOYA',      tipo:'Volqueta'},
+  {placa:'PAE4422', conductor:'HERRERA MAURICIO',  tipo:'Volqueta'},
+  {placa:'QAA3308', conductor:'LUCIO VERA',        tipo:'Vacuum'},
+  {placa:'QAA2609', conductor:'BRAVO JHON',        tipo:'Vacuum'},
+  {placa:'QAA2788', conductor:'ALEX CARRILLO',     tipo:'Vacuum'},
+  {placa:'QAA2828', conductor:'HUMBERTO BRAVO',    tipo:'Vacuum'},
+  {placa:'QAA2839', conductor:'LUCIO VERA',        tipo:'Vacuum'},
+  {placa:'QAA2726', conductor:'TITO CAMPOVERDE',   tipo:'Vacuum'},
+  {placa:'QAA1771', conductor:'JOSE PINTO',        tipo:'Vacuum'},
+  {placa:'QAA2498', conductor:'EDUARDO ZAPATA',    tipo:'Vacuum'},
+  {placa:'PAD1040', conductor:'JOSÉ LOAYZA',       tipo:'Vacuum'},
+  {placa:'QAA2871', conductor:'JORGE GODOS',       tipo:'Vacuum'},
+  {placa:'QAA2786', conductor:'ANDRES MENDEZ',     tipo:'Tanquero'},
+  {placa:'QAA1612', conductor:'WILMAN ATIENCIA',   tipo:'Cama Alta'},
+  {placa:'QAA2194', conductor:'FABIAN MENDEZ',     tipo:'Cama Alta'},
+  {placa:'QAA1476', conductor:'RUBERTO BARRAGAN',  tipo:'Cama Alta'},
+  {placa:'QAA2829', conductor:'ANDRES ROJAS',      tipo:'Cama Alta'},
+  {placa:'QAA2830', conductor:'DANNY SALINAS',     tipo:'Cama Alta'},
+  {placa:'QAA2847', conductor:'JOSÉ CASTRO',       tipo:'Cama Alta'},
+  {placa:'QAA2846', conductor:'NEY SILVA',         tipo:'Cama Alta'},
+  {placa:'QAA2177', conductor:'EDGAR VILLAFUERTE', tipo:'Cama Alta'},
+  {placa:'QAA2767', conductor:'ANGEL JARAMILLO',   tipo:'Cama Alta'},
+  {placa:'QAA3261', conductor:'SAUL FRANCO',       tipo:'Cama Alta'},
+  {placa:'PAB5413', conductor:'JOSÉ LOAYZA',       tipo:'Cama Alta'},
+  {placa:'ZAA2016', conductor:'LUIS MAIGUA',       tipo:'Cama Alta'},
+  {placa:'QAA2753', conductor:'EFREN LUZON',       tipo:'Cama Alta'},
+  {placa:'QAA2216', conductor:'MARLON OLAYA',      tipo:'Cama Alta'},
+  {placa:'QAA1545', conductor:'RICARDO RODRIGUEZ', tipo:'Cama Alta'},
+  {placa:'QAA2973', conductor:'PATRICIO SANCHEZ',  tipo:'Cama Alta'},
+  {placa:'QAA2784', conductor:'IVAN BENALCAZAR',   tipo:'Cama Alta'},
+  {placa:'QAA1492', conductor:'WILLIAM COBEÑA',    tipo:'Cama Alta'},
+  {placa:'PAE3162', conductor:'TITO AMAYA',        tipo:'Cama Baja'},
+  {placa:'QAA2850', conductor:'ANIBAL AILLA',      tipo:'GH'},
+  {placa:'QAA2789', conductor:'GUSTAVO GOYES',     tipo:'GH'},
+  {placa:'PAB7295', conductor:'JULIO LLANO',       tipo:'GH'},
+  {placa:'QAA2747', conductor:'DARWIN GOMEZ',      tipo:'GH'},
+  {placa:'PAE4378', conductor:'ADRIAN RODRIGUEZ',  tipo:'GH'},
+  {placa:'QAA2836', conductor:'YURI RAUL',         tipo:'GH'},
+  {placa:'QAA3224', conductor:'JORGE SODIANO',     tipo:'GH'},
+  {placa:'TBK-2006',conductor:'PAUL LOZADA',       tipo:'Camioneta/Liviano'},
+  {placa:'PWX0964', conductor:'JIMMY CASTILLO',    tipo:'Camioneta/Liviano'},
+  {placa:'IBD8304', conductor:'WILSON VASQUEZ',    tipo:'Camioneta/Liviano'},
+  {placa:'IBE6533', conductor:'WILSON VASQUEZ',    tipo:'Camioneta/Liviano'},
+  {placa:'PFO6690', conductor:'FREDY CHANGO',      tipo:'Camioneta/Liviano'},
+  {placa:'QAB1305', conductor:'',                  tipo:'Camión Suelda'},
+];
+
+// Mapeo tipo de vehículo del formulario → tipo en FLOTA
+const TIPO_MAP = {
+  'Cama Alta':        ['Cama Alta'],
+  'Cama Alta SHAYA':  ['Cama Alta'],
+  'Cama Baja':        ['Cama Baja'],
+  'GH':               ['GH'],
+  'Vacuum':           ['Vacuum'],
+  'Tanquero':         ['Tanquero'],
+  'Volqueta':         ['Volqueta'],
+  'Camioneta/Liviano':['Camioneta/Liviano'],
+};
+
+function flotaPorTipo(tipoVeh) {
+  var tipos = TIPO_MAP[tipoVeh] || [tipoVeh];
+  return FLOTA.filter(function(u){ return tipos.indexOf(u.tipo) > -1; });
+}
+
 let ST = {};
 let currentInspType = null;
 let currentForm = null;
 let currentTab = 0;
 let inspStatus = null;
 let inspectorName = '';
+let novedadesFotos = []; // fotos del campo "Novedades adicionales"
 
 function uid(tab, idx) {
   return 'i_' + tab.replace(/[^a-z0-9]/gi,'_') + '_' + idx;
@@ -2517,6 +2727,55 @@ function buildDatosTab() {
       }
       grid.appendChild(el);
     });
+
+    // Lógica reactiva flota: tipo → placas filtradas, placa → conductor
+    setTimeout(function() {
+      var tipoEl     = document.getElementById('datos-tipoveh');
+      var placasEl   = document.getElementById('datos-placas');
+      var conductorEl= document.getElementById('datos-conductor');
+      if(!tipoEl || !placasEl) return;
+
+      function actualizarPlacas() {
+        var tipo = tipoEl.value || tipoEl.tagName === 'SELECT' ? tipoEl.value : '';
+        var unidades = flotaPorTipo(tipo);
+        if(unidades.length === 0) return; // sin datos para este tipo, dejar libre
+
+        // Convertir input a select si no lo es ya
+        if(placasEl.tagName === 'INPUT') {
+          var sel = document.createElement('select');
+          sel.className = 'datos-select';
+          sel.id = 'datos-placas';
+          placasEl.parentNode.replaceChild(sel, placasEl);
+          placasEl = sel;
+        }
+        placasEl.innerHTML = '<option value="">Seleccionar placa...</option>';
+        unidades.forEach(function(u) {
+          var opt = document.createElement('option');
+          opt.value = u.placa;
+          opt.textContent = u.placa;
+          placasEl.appendChild(opt);
+        });
+        placasEl.onchange = function() {
+          var u = unidades.find(function(x){ return x.placa === placasEl.value; });
+          if(u && conductorEl) {
+            conductorEl.value = u.conductor;
+            conductorEl.readOnly = true;
+            conductorEl.style.background = '#f0f0f0';
+            conductorEl.style.color = '#666';
+          } else if(conductorEl) {
+            conductorEl.value = '';
+            conductorEl.readOnly = false;
+            conductorEl.style.background = '';
+            conductorEl.style.color = '';
+          }
+        };
+      }
+
+      // Disparar al cambiar tipo
+      tipoEl.addEventListener('change', actualizarPlacas);
+      // Disparar inmediatamente con el valor por defecto
+      if(tipoEl.value) actualizarPlacas();
+    }, 50);
   }
 
   wrap.appendChild(grid);
@@ -2630,6 +2889,188 @@ function buildChecklistTab(tab, tabIdx) {
     genObs.innerHTML='<span class="f-lbl">Observaciones generales del arnés</span>';
     const genTA=document.createElement('textarea');genTA.className='obs-ta';genTA.rows=3;genTA.placeholder='Observaciones generales...';
     genTA.id='arnes-obs-gen-'+tabIdx;genObs.appendChild(genTA);sec.appendChild(genObs);
+    wrap.appendChild(sec);
+    return wrap;
+  }
+
+  // ---- MANGUERAS HSE-86 ----
+  if(tab.isManguera) {
+    const sec = document.createElement('div');
+    sec.className = 'section';
+    const h = document.createElement('div');
+    h.className = 'section-hdr ' + (tab.color || 'teal');
+    h.innerHTML = `<span class="section-title">${tab.name}</span>`;
+    sec.appendChild(h);
+    if(tab.note){
+      const n = document.createElement('div'); n.className='section-note'; n.textContent='Nota: '+tab.note; sec.appendChild(n);
+    }
+
+    const mangId = 'manguera_'+tabIdx;
+    if(!ST[mangId]) ST[mangId] = {items:[], certEnt:'', certGuia:'', certFecha:'', obs:''};
+    ST[mangId].items.forEach(function(it){ if(!it.photos) it.photos=[]; });
+
+    // Certificación
+    const certDiv = document.createElement('div');
+    certDiv.style.cssText='padding:12px 14px;border-bottom:.5px solid rgba(0,0,0,.1)';
+    certDiv.innerHTML=`
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div><span class="f-lbl">Entidad Certificadora</span>
+          <input type="text" class="datos-input" placeholder="Ej: JFW" value="${ST[mangId].certEnt||''}" oninput="ST['${mangId}'].certEnt=this.value">
+        </div>
+        <div><span class="f-lbl">N° Guía / Reporte</span>
+          <input type="text" class="datos-input" placeholder="Ej: JFW-1622-2025" value="${ST[mangId].certGuia||''}" oninput="ST['${mangId}'].certGuia=this.value">
+        </div>
+        <div><span class="f-lbl">Fecha Cad. Certificación</span>
+          <input type="date" class="datos-input" value="${ST[mangId].certFecha||''}" oninput="ST['${mangId}'].certFecha=this.value">
+        </div>
+      </div>
+    `;
+    sec.appendChild(certDiv);
+
+    const subTitulo = document.createElement('div');
+    subTitulo.style.cssText='background:#f0efe9;padding:7px 14px;font-size:11px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.5px;border-bottom:.5px solid rgba(0,0,0,.1)';
+    subTitulo.textContent='Descripción del Accesorio';
+    sec.appendChild(subTitulo);
+
+    const tableWrap = document.createElement('div');
+    tableWrap.style.cssText='overflow-x:auto;padding:0 14px';
+
+    const renderTableMang = () => {
+      tableWrap.innerHTML='';
+      const table = document.createElement('table');
+      table.style.cssText='width:100%;border-collapse:collapse;font-size:11px;min-width:400px';
+      const thead = document.createElement('thead');
+      thead.innerHTML=`<tr style="background:#f7f6f3">
+        <th style="padding:6px 8px;text-align:left;border-bottom:.5px solid rgba(0,0,0,.15);width:30px">N°</th>
+        <th style="padding:6px 8px;text-align:left;border-bottom:.5px solid rgba(0,0,0,.15)">Código</th>
+        <th style="padding:6px 8px;text-align:left;border-bottom:.5px solid rgba(0,0,0,.15)">Capacidad</th>
+        <th style="padding:6px 8px;text-align:left;border-bottom:.5px solid rgba(0,0,0,.15)">Dimensiones</th>
+        <th style="padding:6px 8px;text-align:center;border-bottom:.5px solid rgba(0,0,0,.15);width:80px">Estado</th>
+        <th style="padding:6px 8px;text-align:center;border-bottom:.5px solid rgba(0,0,0,.15);width:30px"></th>
+      </tr>`;
+      table.appendChild(thead);
+
+      const tbody = document.createElement('tbody');
+      ST[mangId].items.forEach((item, idx) => {
+        if(!item.photos) item.photos = [];
+        const tr = document.createElement('tr');
+        tr.style.borderBottom = '.5px solid rgba(0,0,0,.06)';
+        tr.innerHTML=`
+          <td style="padding:5px 8px;color:#999">${idx+1}</td>
+          <td style="padding:5px 4px"><input type="text" value="${item.codigo||''}" placeholder="Ej: MV-001" style="width:100%;border:.5px solid rgba(0,0,0,.2);border-radius:4px;padding:3px 5px;font-size:11px;background:#f7f6f3" data-field="codigo" data-idx="${idx}"></td>
+          <td style="padding:5px 4px"><input type="text" value="${item.capacidad||''}" placeholder="Ej: 4\"" style="width:100%;border:.5px solid rgba(0,0,0,.2);border-radius:4px;padding:3px 5px;font-size:11px;background:#f7f6f3" data-field="capacidad" data-idx="${idx}"></td>
+          <td style="padding:5px 4px"><input type="text" value="${item.dimensiones||''}" placeholder="Ej: 4\"×10m" style="width:100%;border:.5px solid rgba(0,0,0,.2);border-radius:4px;padding:3px 5px;font-size:11px;background:#f7f6f3" data-field="dimensiones" data-idx="${idx}"></td>
+          <td style="padding:5px 8px;text-align:center">
+            <div style="display:flex;gap:4px;justify-content:center">
+              <button data-estado="BUENO" data-idx="${idx}" style="padding:3px 8px;border-radius:4px;border:1px solid ${item.estado==='BUENO'?'#1a6b3c':'rgba(0,0,0,.2)'};background:${item.estado==='BUENO'?'#1a6b3c':'#f7f6f3'};color:${item.estado==='BUENO'?'white':'#666'};font-size:10px;font-weight:600;cursor:pointer">B</button>
+              <button data-estado="MALO" data-idx="${idx}" style="padding:3px 8px;border-radius:4px;border:1px solid ${item.estado==='MALO'?'#c0392b':'rgba(0,0,0,.2)'};background:${item.estado==='MALO'?'#c0392b':'#f7f6f3'};color:${item.estado==='MALO'?'white':'#666'};font-size:10px;font-weight:600;cursor:pointer">M</button>
+            </div>
+          </td>
+          <td style="padding:5px 4px;text-align:center">
+            <button data-del="${idx}" style="background:none;border:none;color:#c0392b;cursor:pointer;font-size:14px">×</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+
+        // Fila de fotos
+        const trFoto = document.createElement('tr');
+        trFoto.style.cssText = 'background:#f9f9f7;border-bottom:.5px solid rgba(0,0,0,.1)';
+        const tdFoto = document.createElement('td');
+        tdFoto.colSpan = 6;
+        tdFoto.style.cssText = 'padding:6px 8px 8px 24px';
+        const fotoLbl = document.createElement('span');
+        fotoLbl.style.cssText = 'font-size:10px;color:#999;margin-right:8px';
+        fotoLbl.textContent = '📷 Evidencia fotográfica:';
+        tdFoto.appendChild(fotoLbl);
+        const fotoInp = document.createElement('input');
+        fotoInp.type = 'file'; fotoInp.accept = 'image/*'; fotoInp.multiple = true;
+        fotoInp.style.display = 'none';
+        fotoInp.setAttribute('capture', 'environment');
+        const fotoBtn = document.createElement('label');
+        fotoBtn.style.cssText = 'display:inline-block;padding:3px 10px;background:#eef3fb;border:1px solid #b8cef0;border-radius:5px;font-size:11px;color:#1a4a7d;cursor:pointer;font-weight:600';
+        fotoBtn.textContent = '+ Foto';
+        fotoBtn.appendChild(fotoInp);
+        tdFoto.appendChild(fotoBtn);
+        const prevDiv = document.createElement('div');
+        prevDiv.style.cssText = 'display:inline-flex;gap:5px;flex-wrap:wrap;margin-left:8px;vertical-align:middle';
+        const renderPrevMang = () => {
+          prevDiv.innerHTML = '';
+          (item.photos||[]).forEach((p, pi) => {
+            const wrap2 = document.createElement('div');
+            wrap2.style.cssText = 'position:relative;width:40px;height:40px;border-radius:5px;overflow:hidden;border:.5px solid rgba(0,0,0,.2)';
+            const img = document.createElement('img');
+            img.src = p.dataUrl; img.style.cssText = 'width:100%;height:100%;object-fit:cover';
+            const del = document.createElement('button');
+            del.style.cssText = 'position:absolute;top:1px;right:1px;width:14px;height:14px;background:rgba(0,0,0,.6);border-radius:50%;border:none;cursor:pointer;color:white;font-size:8px;display:flex;align-items:center;justify-content:center';
+            del.textContent = '×';
+            del.onclick = () => { item.photos.splice(pi,1); renderPrevMang(); };
+            wrap2.appendChild(img); wrap2.appendChild(del);
+            prevDiv.appendChild(wrap2);
+          });
+        };
+        fotoInp.onchange = e => {
+          Array.from(e.target.files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = ev => { item.photos.push({name:file.name, dataUrl:ev.target.result}); renderPrevMang(); };
+            reader.readAsDataURL(file);
+          });
+          e.target.value = '';
+        };
+        renderPrevMang();
+        tdFoto.appendChild(prevDiv);
+        trFoto.appendChild(tdFoto);
+        tbody.appendChild(trFoto);
+
+        // Event listeners para inputs y botones
+        tr.querySelectorAll('input[data-field]').forEach(inp => {
+          inp.addEventListener('input', e => {
+            ST[mangId].items[e.target.dataset.idx][e.target.dataset.field] = e.target.value;
+          });
+        });
+        tr.querySelectorAll('button[data-estado]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const i2 = parseInt(btn.dataset.idx);
+            ST[mangId].items[i2].estado = btn.dataset.estado;
+            renderTableMang();
+          });
+        });
+        tr.querySelector('button[data-del]').addEventListener('click', () => {
+          ST[mangId].items.splice(parseInt(tr.querySelector('button[data-del]').dataset.del), 1);
+          renderTableMang();
+        });
+      });
+
+      table.appendChild(tbody);
+      tableWrap.appendChild(table);
+
+      // Botón agregar
+      const addBtn = document.createElement('button');
+      addBtn.style.cssText='display:block;margin:10px auto;padding:7px 20px;background:#1a6b3c;color:white;border:none;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer';
+      addBtn.textContent='+ Agregar Manguera';
+      addBtn.onclick = () => {
+        if(ST[mangId].items.length < (tab.cantMax||10)){
+          ST[mangId].items.push({codigo:'',capacidad:'',dimensiones:'',estado:'',obs:'',photos:[]});
+          renderTableMang();
+        }
+      };
+      tableWrap.appendChild(addBtn);
+    };
+
+    renderTableMang();
+    sec.appendChild(tableWrap);
+
+    // Observaciones generales
+    const obsGenDiv = document.createElement('div');
+    obsGenDiv.style.cssText='padding:12px 14px;border-top:.5px solid rgba(0,0,0,.1)';
+    const obsLbl = document.createElement('span');
+    obsLbl.className='f-lbl'; obsLbl.textContent='Observaciones Generales';
+    const obsTa = document.createElement('textarea');
+    obsTa.className='obs-ta'; obsTa.rows=2; obsTa.placeholder='Observaciones generales de las mangueras...';
+    obsTa.value = ST[mangId].obs||'';
+    obsTa.oninput = e => { ST[mangId].obs = e.target.value; };
+    obsGenDiv.appendChild(obsLbl); obsGenDiv.appendChild(obsTa);
+    sec.appendChild(obsGenDiv);
+
     wrap.appendChild(sec);
     return wrap;
   }
@@ -2960,6 +3401,39 @@ function buildChecklistTab(tab, tabIdx) {
     return wrap;
   }
 
+  // ---- PARÁMETROS (solo check ✓) ----
+  if(tab.isParam) {
+    const sec = document.createElement('div');
+    sec.className = 'section';
+    const h = document.createElement('div');
+    h.className = 'section-hdr ' + (tab.color||'green');
+    h.innerHTML = `<span class="section-title">${tab.name}</span>`;
+    sec.appendChild(h);
+    if(tab.note){
+      const n=document.createElement('div');n.className='section-note';n.textContent='Nota: '+tab.note;sec.appendChild(n);
+    }
+    (tab.items||[]).forEach((item,ii)=>{
+      const id = uid(tab.name, ii);
+      if(!ST[id]) ST[id]={val:null};
+      const row=document.createElement('div');
+      row.className='item';
+      row.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:.5px solid rgba(0,0,0,.08)';
+      const lbl=document.createElement('div');
+      lbl.className='item-label';lbl.textContent=item.l;
+      const chk=document.createElement('button');
+      chk.style.cssText='width:32px;height:32px;border-radius:6px;border:1.5px solid rgba(0,0,0,.2);background:'+(ST[id].val?'#1a6b3c':'#f7f6f3')+';color:white;font-size:16px;cursor:pointer;flex-shrink:0;transition:all .15s';
+      chk.textContent=ST[id].val?'✓':'';
+      chk.onclick=()=>{
+        ST[id].val=ST[id].val?null:'✓';
+        chk.textContent=ST[id].val?'✓':'';
+        chk.style.background=ST[id].val?'#1a6b3c':'#f7f6f3';
+      };
+      row.appendChild(lbl);row.appendChild(chk);sec.appendChild(row);
+    });
+    wrap.appendChild(sec);
+    return wrap;
+  }
+
   // ---- NORMAL CHECKLIST ----
   const section = document.createElement('div');
   section.className = 'section';
@@ -3157,6 +3631,8 @@ function updateProgress(){
   currentForm.tabs.forEach(tab=>{
     if(tab.isArnes) return; // arnés doesn't count in progress
     if(tab.isAmarre) return; // amarre has its own structure
+    if(tab.isManguera) return; // mangueras have their own structure
+    if(tab.isParam) return; // parámetros son solo check
     if(tab.isKitDetallado){
       tab.subkits.forEach(sk=>{
         sk.items.forEach((_,ii)=>{
@@ -3184,6 +3660,8 @@ function buildSummary(){
   currentForm.tabs.forEach(tab=>{
     if(tab.isArnes) return;
     if(tab.isAmarre) return;
+    if(tab.isManguera) return;
+    if(tab.isParam) return;
     if(tab.isKitDetallado){
       tab.subkits.forEach(sk=>{
         sk.items.forEach((item,ii)=>{
@@ -3207,9 +3685,9 @@ function buildSummary(){
   // Contar Bueno/Malo de amarres (hse43)
   var bueno=0, malo=0;
   currentForm.tabs.forEach(function(tab){
-    if(!tab.isAmarre) return;
+    if(!tab.isAmarre && !tab.isManguera) return;
     var tabIdx=currentForm.tabs.indexOf(tab)+1;
-    var aST=ST['amarre_'+tabIdx]||{};
+    var aST = tab.isAmarre ? (ST['amarre_'+tabIdx]||{}) : (ST['manguera_'+tabIdx]||{});
     (aST.items||[]).forEach(function(it){
       if(it.estado==='BUENO') bueno++;
       else if(it.estado==='MALO') malo++;
@@ -3244,6 +3722,46 @@ function buildSummary(){
 
   document.getElementById('btn-aprobado').className='status-btn'+(inspStatus==='APROBADO'?' ap-sel':'');
   document.getElementById('btn-noaprobado').className='status-btn'+(inspStatus==='NO APROBADO'?' na-sel':'');
+
+  // Inicializar fotos de novedades
+  novedadesFotos = [];
+  var novPrev = document.getElementById('nov-foto-previews');
+  if(novPrev) novPrev.innerHTML = '';
+  var novInp = document.getElementById('nov-foto-inp');
+  if(novInp) {
+    novInp.value = '';
+    novInp.onchange = function(e) {
+      Array.from(e.target.files).forEach(function(file) {
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+          novedadesFotos.push({name: file.name, dataUrl: ev.target.result});
+          renderNovPreviews();
+        };
+        reader.readAsDataURL(file);
+      });
+      e.target.value = '';
+    };
+  }
+
+  function renderNovPreviews() {
+    var prev = document.getElementById('nov-foto-previews');
+    if(!prev) return;
+    prev.innerHTML = '';
+    novedadesFotos.forEach(function(p, pi) {
+      var wrap = document.createElement('div');
+      wrap.style.cssText = 'position:relative;width:58px;height:58px;border-radius:7px;overflow:hidden;border:.5px solid rgba(0,0,0,.2)';
+      var img = document.createElement('img');
+      img.src = p.dataUrl;
+      img.style.cssText = 'width:100%;height:100%;object-fit:cover';
+      var del = document.createElement('button');
+      del.style.cssText = 'position:absolute;top:2px;right:2px;width:15px;height:15px;background:rgba(0,0,0,.6);border-radius:50%;border:none;cursor:pointer;color:white;font-size:9px;display:flex;align-items:center;justify-content:center';
+      del.textContent = '×';
+      del.onclick = function() { novedadesFotos.splice(pi, 1); renderNovPreviews(); };
+      wrap.appendChild(img); wrap.appendChild(del);
+      prev.appendChild(wrap);
+    });
+  }
+
   showScreen('screen-summary');
 }
 
@@ -3254,7 +3772,7 @@ function setStatus(v){
 }
 
 // URL del Apps Script — pegar aquí después de publicar
-var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz__87rLYFkUsTQhRQVjs2jBSvHuFTtdNcb8m4zyY8wwXQVolYP9e1OFa_2lxpQbDpuYQ/exec';
+var SCRIPT_URL = https://script.google.com/macros/s/AKfycbzP0_UGmRS_E-o_5RvRjtz3BDcZvCir9Nztd5uqVnhhsPVJA8RPFKBN4DVSabHVvGGSXQ/exec';
 
 function submitInspection(){
   if(!inspStatus){alert('Por favor selecciona el estado de la unidad.');return;}
@@ -3278,7 +3796,7 @@ function submitInspection(){
   // Recopilar ítems con estado — usando uid() igual que el render
   var items = [];
   f.tabs.forEach(function(tab){
-    if(tab.isArnes||tab.isAmarre||tab.isKitDetallado) return;
+    if(tab.isArnes||tab.isAmarre||tab.isManguera||tab.isKitDetallado) return;
     (tab.items||[]).forEach(function(item, ii){
       var id = uid(tab.name, ii);
       var st = ST[id]||{};
@@ -3327,6 +3845,12 @@ function submitInspection(){
       });
     }
   });
+  // Fotos de Novedades adicionales
+  novedadesFotos.forEach(function(p){
+    if(p && p.dataUrl && p.dataUrl.indexOf('base64,')>-1){
+      todasFotos.push({nombre: p.name||'novedad.jpg', dataUrl: p.dataUrl});
+    }
+  });
 
   // Arneses
   var arneses = [];
@@ -3370,7 +3894,32 @@ function submitInspection(){
     });
   });
 
+  // Secciones mangueras (hse86)
+  var mangueras = [];
+  f.tabs.forEach(function(tab){
+    if(!tab.isManguera) return;
+    var tabIdx = f.tabs.indexOf(tab) + 1;
+    var mId = 'manguera_'+tabIdx;
+    var mST = ST[mId]||{};
+    mangueras.push({
+      nombre: tab.name,
+      certEnt: mST.certEnt||'',
+      certGuia: mST.certGuia||'',
+      certFecha: mST.certFecha||'',
+      obs: mST.obs||'',
+      items: (mST.items||[]).map(function(it){
+        return {
+          codigo: it.codigo||'', capacidad: it.capacidad||'',
+          dimensiones: it.dimensiones||'', estado: it.estado||'',
+          obs: it.obs||'',
+          fotos: (it.photos||[]).map(function(p){return {nombre:p.name,dataUrl:p.dataUrl};})
+        };
+      })
+    });
+  });
+
   var obsEl = document.getElementById('obs-generales');
+  var novEl = document.getElementById('novedades-extra');
 
   var payload = {
     formKey: fk,
@@ -3379,9 +3928,12 @@ function submitInspection(){
     inspector: inspectorName||'',
     resultado: inspStatus||'',
     obsGenerales: obsEl ? obsEl.value : '',
+    novedadesExtra: novEl ? novEl.value : '',
+    fotosNovedades: novedadesFotos.map(function(p){return {nombre:p.name||'novedad.jpg', dataUrl:p.dataUrl};}),
     items: items,
     arneses: arneses,
     secciones: secciones,
+    mangueras: mangueras,
     fotos: [] // se llenan abajo con URLs de Drive
   };
   Object.assign(payload, dv);
@@ -3647,6 +4199,9 @@ function printInspection() {
       case 'hse43':
         return dr('NOMBRE DEL CONDUCTOR:',dv.conductor||'','TIPO DE VEH\u00cdCULO:',dv.tipoveh||'','FECHA DE INSPECCI\u00d3N:',fecha)
           +dr('PLACAS:',dv.placas||'','LUGAR DE INSPECCI\u00d3N:',dv.lugar||'','','');
+      case 'hse86':
+        return dr('NOMBRE DEL CONDUCTOR:',dv.conductor||'','TIPO DE VEH\u00cdCULO:',dv.tipoveh||'','FECHA DE INSPECCI\u00d3N:',fecha)
+          +dr('PLACAS:',dv.placas||'','LUGAR DE INSPECCI\u00d3N:',dv.lugar||'','','');
       default:
         return dr('NOMBRE DEL CONDUCTOR:',dv.conductor||dv.operador||'','TIPO DE VEH\u00cdCULO:',dv.tipoveh||'','FECHA DE INSPECCI\u00d3N:',fecha)
           +dr('TIPO DE LICENCIA:',dv.tipoLicencia||'','MARCA Y A\u00d1O:',dv.marca||'','LUGAR DE INSPECCI\u00d3N:',dv.lugar||'')
@@ -3665,20 +4220,28 @@ function printInspection() {
   }
 
   // Tabla dos columnas — layout exacto
-  function twoCol(lSecs, rSecs, extraNotes) {
-    var cg = '<colgroup>'
-      +'<col style="width:30%"><col style="width:8%"><col style="width:8%">'
-      +'<col style="width:3%"><col style="width:3%"><col style="width:3%">'
-      +'<col style="width:1%">'
-      +'<col style="width:28%"><col style="width:8%"><col style="width:8%">'
-      +'<col style="width:3%"><col style="width:3%"><col style="width:3%">'
-      +'</colgroup>';
+  function twoCol(lSecs, rSecs, extraNotes, noSep, hideSecHdr) {
+    var cg = noSep
+      ? '<colgroup>'
+        +'<col style="width:31%"><col style="width:8%"><col style="width:8%">'
+        +'<col style="width:3%"><col style="width:3%"><col style="width:3%">'
+        +'<col style="width:0%">'
+        +'<col style="width:29%"><col style="width:8%"><col style="width:8%">'
+        +'<col style="width:3%"><col style="width:3%"><col style="width:3%">'
+        +'</colgroup>'
+      : '<colgroup>'
+        +'<col style="width:30%"><col style="width:8%"><col style="width:8%">'
+        +'<col style="width:3%"><col style="width:3%"><col style="width:3%">'
+        +'<col style="width:1%">'
+        +'<col style="width:28%"><col style="width:8%"><col style="width:8%">'
+        +'<col style="width:3%"><col style="width:3%"><col style="width:3%">'
+        +'</colgroup>';
 
     function buildRows(secNames) {
       var rows = [];
       secNames.forEach(function(name){
         var tab = getTab(name); if(!tab) return;
-        rows.push({type:'hdr', name:name});
+        if(!hideSecHdr) rows.push({type:'hdr', name:name});
         (tab.items||[]).forEach(function(item, ii){
           rows.push({type:'item', item:item, tabName:name, idx:ii});
         });
@@ -3963,18 +4526,27 @@ function printInspection() {
   var css = makeCSS(7);
 
   if(fk==='hse16') {
+    css = makeCSS(7);
     // P1: Doc+Libs+Elec | Mec+Acces — stretch para llenar hoja — SIN firmas
     html += hdr(f.code,f.version,f.fecha,f.title,true)+datosTable(getDatos('hse16'));
     html += twoColStretch(
       ['Doc. / Certificaciones y Liberaciones del Veh\u00edculo','Liberaciones del Veh\u00edculo por Cliente','Sistema El\u00e9ctrico'],
       ['Sistema Mec\u00e1nico','Accesorios de Seguridad Industrial'],null,43);
-    html += midFooter(1,2);
+    html += midFooter(1,4);
     // P2: Acople+Kits | EPP+DocCond — firmas aquí
     html += hdr(f.code,f.version,f.fecha,f.title,false)+datosTable(getDatos('hse16'));
     html += twoCol(
       ['Acople y Semi-Remolque','Kits del Veh\u00edculo'],
       ['Elementos de Protecci\u00f3n Personal (EPP)','Doc. / Certificaciones del Conductor']);
-    html += footer(obsGen,aprobado,noAprobado,null,2,2);
+    html += footer(obsGen,aprobado,noAprobado,null,2,4);
+    // P3: HSE-06 Herr+Derrames
+    html += hdr('DYT-R-HSE-06','2.0','08/04/2026','INSPECCI\u00d3N DE KIT\u00b4S DE VEH\u00cdCULOS',false)+datosTable(getDatos06());
+    html += kitFullWidthStretch(['Kit de Herramientas y Carretera','Kit de Derrames']);
+    html += midFooter(3,4);
+    // P4: HSE-06 PrimAux+Investigación — CON firmas
+    html += hdr('DYT-R-HSE-06','2.0','08/04/2026','INSPECCI\u00d3N DE KIT\u00b4S DE VEH\u00cdCULOS',false)+datosTable(getDatos06());
+    html += kitFullWidthStretch(['Kit de Primeros Auxilios','Kit de Investigaci\u00f3n de Accidentes']);
+    html += footer('',false,false,null,4,4);
 
   } else if(fk==='hse16shaya') {
     css = makeCSS(7);
@@ -4174,10 +4746,45 @@ function printInspection() {
     css = makeCSS(7);
     html += hdr(f.code,f.version,f.fecha,f.title,true)+datosTable(getDatos('hse43'));
 
-    // Sección Parámetros a Inspeccionar (tab normal con C/NC/NA)
+    // Sección Parámetros a Inspeccionar — tabla única dos columnas
     var tabParams = f.tabs.find(function(t){return t.name==='Parámetros a Inspeccionar';});
     if(tabParams){
-      html += twoCol(['Parámetros a Inspeccionar'],[]);
+      var itemsP = tabParams.items||[];
+      var midP = Math.ceil(itemsP.length/2);
+      var lItems = itemsP.slice(0, midP);
+      var rItems = itemsP.slice(midP);
+      var maxP = Math.max(lItems.length, rItems.length);
+
+      var paramHTML = '<table style="border:1px solid #000;border-top:none">'
+        +'<colgroup>'
+        +'<col style="width:41%"><col style="width:5%">'
+        +'<col style="width:1%">'
+        +'<col style="width:47%"><col style="width:6%">'
+        +'</colgroup>'
+        +'<tr><td class="sh" colspan="5" style="text-align:center">PARÁMETROS A INSPECCIONAR</td></tr>'
+        +'<tr>'
+        +'<td class="ch">Parámetro</td><td class="ch"></td>'
+        +'<td class="ce"></td>'
+        +'<td class="ch">Parámetro</td><td class="ch"></td>'
+        +'</tr>';
+
+      for(var pi=0; pi<maxP; pi++){
+        var lIt = lItems[pi]||null;
+        var rIt = rItems[pi]||null;
+        var lId = lIt ? uid('Parámetros a Inspeccionar', pi) : null;
+        var rId = rIt ? uid('Parámetros a Inspeccionar', midP+pi) : null;
+        var lChk = lId && ST[lId] && ST[lId].val ? '✓' : '';
+        var rChk = rId && ST[rId] && ST[rId].val ? '✓' : '';
+        paramHTML += '<tr>'
+          +'<td class="il">'+(lIt?lIt.l:'')+'</td>'
+          +'<td class="cc" style="text-align:center;font-size:10pt"><b>'+lChk+'</b></td>'
+          +'<td class="ce"></td>'
+          +'<td class="il">'+(rIt?rIt.l:'')+'</td>'
+          +'<td class="cc" style="text-align:center;font-size:10pt"><b>'+rChk+'</b></td>'
+          +'</tr>';
+      }
+      paramHTML += '</table>';
+      html += paramHTML;
     }
 
     // Calcular BUENO/MALO para el resumen
@@ -4274,9 +4881,124 @@ function printInspection() {
     html+=aHtml2+'</table>';
     html += footer(obsGen, aprobado43, noAprobado43, null, 1, 1);
 
+  } else if(fk==='hse86') {
+    css = makeCSS(7);
+    html += hdr(f.code,f.version,f.fecha,f.title,true)+datosTable(getDatos('hse86'));
+
+    // Parámetros a Inspeccionar
+    var tabParams86 = f.tabs.find(function(t){return t.isParam;});
+    if(tabParams86){
+      var itemsP86 = tabParams86.items||[];
+      var midP86 = Math.ceil(itemsP86.length/2);
+      var lItems86 = itemsP86.slice(0, midP86);
+      var rItems86 = itemsP86.slice(midP86);
+      var maxP86 = Math.max(lItems86.length, rItems86.length);
+      var paramHTML86 = '<table style="border:1px solid #000;border-top:none">'
+        +'<colgroup>'
+        +'<col style="width:41%"><col style="width:5%">'
+        +'<col style="width:1%">'
+        +'<col style="width:47%"><col style="width:6%">'
+        +'</colgroup>'
+        +'<tr><td class="sh" colspan="5" style="text-align:center">PARÁMETROS A INSPECCIONAR</td></tr>'
+        +'<tr>'
+        +'<td class="ch">Parámetro</td><td class="ch"></td>'
+        +'<td class="ce"></td>'
+        +'<td class="ch">Parámetro</td><td class="ch"></td>'
+        +'</tr>';
+      for(var pi86=0; pi86<maxP86; pi86++){
+        var lIt86 = lItems86[pi86]||null;
+        var rIt86 = rItems86[pi86]||null;
+        var lId86 = lIt86 ? uid(tabParams86.name, pi86) : null;
+        var rId86 = rIt86 ? uid(tabParams86.name, midP86+pi86) : null;
+        var lChk86 = lId86 && ST[lId86] && ST[lId86].val ? '✓' : '';
+        var rChk86 = rId86 && ST[rId86] && ST[rId86].val ? '✓' : '';
+        paramHTML86 += '<tr>'
+          +'<td class="il">'+(lIt86?lIt86.l:'')+'</td>'
+          +'<td class="cc" style="text-align:center;font-size:10pt"><b>'+lChk86+'</b></td>'
+          +'<td class="ce"></td>'
+          +'<td class="il">'+(rIt86?rIt86.l:'')+'</td>'
+          +'<td class="cc" style="text-align:center;font-size:10pt"><b>'+rChk86+'</b></td>'
+          +'</tr>';
+      }
+      paramHTML86 += '</table>';
+      html += paramHTML86;
+    }
+
+    // Tabla de mangueras
+    var aprobado86   = inspStatus === 'APROBADO';
+    var noAprobado86 = inspStatus === 'NO APROBADO';
+    var mangTab = f.tabs.find(function(t){return t.isManguera;});
+    var mangHtml = '<table style="border:1px solid #000;border-top:none">'
+      +'<colgroup>'
+      +'<col style="width:5%"><col style="width:28%"><col style="width:17%">'
+      +'<col style="width:17%"><col style="width:8%"><col style="width:8%">'
+      +'</colgroup>';
+    if(mangTab){
+      var mangId86 = 'manguera_'+(f.tabs.indexOf(mangTab)+1);
+      var mData = ST[mangId86]||{};
+      mangHtml+='<tr><td class="ksh" colspan="6">MANGUERAS</td></tr>'
+        +'<tr>'
+        +'<td class="kd" colspan="2">ENTIDAD CERTIFICADORA</td>'
+        +'<td class="kd" colspan="2">N\u00b0 GU\u00cdA / REPORTE</td>'
+        +'<td class="kd" colspan="2">FECHA CAD. CERTIFICACI\u00d3N</td>'
+        +'</tr>'
+        +'<tr>'
+        +'<td class="kc" colspan="2">'+(mData.certEnt||'')+'</td>'
+        +'<td class="kc" colspan="2">'+(mData.certGuia||'')+'</td>'
+        +'<td class="kc" colspan="2">'+(mData.certFecha||'')+'</td>'
+        +'</tr>'
+        +'<tr><td class="ksh" colspan="6">DESCRIPCI\u00d3N DEL ACCESORIO</td></tr>'
+        +'<tr>'
+        +'<td class="kd">N\u00b0</td>'
+        +'<td class="kd">C\u00d3DIGO</td>'
+        +'<td class="kd">CAPACIDAD</td>'
+        +'<td class="kd">DIMENSIONES</td>'
+        +'<td class="kd">BUENO</td>'
+        +'<td class="kd">MALO</td>'
+        +'</tr>';
+      var mangItems = mData.items||[];
+      for(var r86=0; r86<Math.max(mangItems.length,6); r86++){
+        var itm86 = mangItems[r86]||{};
+        mangHtml+='<tr>'
+          +'<td class="kc">'+(r86+1)+'</td>'
+          +'<td class="kc">'+(itm86.codigo||'')+'</td>'
+          +'<td class="kc">'+(itm86.capacidad||'')+'</td>'
+          +'<td class="kc">'+(itm86.dimensiones||'')+'</td>'
+          +'<td class="cc">'+(itm86.estado==='BUENO'?'&#x2713;':'')+'</td>'
+          +'<td class="cc">'+(itm86.estado==='MALO'?'&#x2713;':'')+'</td>'
+          +'</tr>';
+      }
+      // Evidencias fotográficas
+      mangHtml+='<tr><td class="kd" colspan="6">EVIDENCIAS FOTOGR\u00c1FICAS</td></tr>';
+      var secPhotosMang = [];
+      mangItems.forEach(function(itx, idx){
+        (itx.photos||[]).forEach(function(p){
+          var dUrl = p.dataUrl||p.data||'';
+          if(dUrl) secPhotosMang.push({label:'Ítem '+(idx+1)+(itx.codigo?' — '+itx.codigo:''), dataUrl:dUrl});
+        });
+      });
+      if(secPhotosMang.length>0){
+        mangHtml+='<tr><td colspan="6" style="padding:2mm"><div style="display:flex;flex-wrap:wrap;gap:3mm">';
+        secPhotosMang.forEach(function(p){
+          mangHtml+='<div style="text-align:center;max-width:85mm">'
+            +'<img src="'+p.dataUrl+'" style="width:100%;height:auto;object-fit:contain;border:.5px solid #ccc;display:block;margin:0 0 1mm 0">'
+            +'<span style="font-size:5pt;color:#666">'+p.label+'</span>'
+            +'</div>';
+        });
+        mangHtml+='</div></td></tr>';
+      } else {
+        mangHtml+='<tr><td colspan="6" class="kc" style="min-height:15mm;color:#999;font-size:7pt;text-align:center">Sin evidencias fotográficas</td></tr>';
+      }
+      mangHtml+='<tr><td class="kd" colspan="6">OBSERVACIONES GENERALES</td></tr>'
+        +'<tr><td colspan="6" class="kc" style="min-height:8mm;text-align:left;padding:.5mm">'+(mData.obs||'')+'</td></tr>';
+    }
+    mangHtml+='</table>';
+    html+=mangHtml;
+    html += footer(obsGen, aprobado86, noAprobado86, null, 1, 1);
+
   } else {
     html += hdr(f.code,f.version,f.fecha,f.title,true)+datosTable(getDatos(fk));
-    var allT = f.tabs.filter(function(t){return !t.isArnes&&!t.isAmarre&&!t.isKitDetallado;});
+    var allT = f.tabs.filter(function(t){return !t.isArnes&&!t.isAmarre&&!t.isManguera&&!t.isKitDetallado;});
     var midT=Math.ceil(allT.length/2);
     html += twoCol(allT.slice(0,midT).map(function(t){return t.name;}),allT.slice(midT).map(function(t){return t.name;}));
     html += footer(obsGen,aprobado,noAprobado,null,1,1);
@@ -4289,6 +5011,92 @@ function printInspection() {
   if(!pc){pc=document.createElement('div');pc.id='print-container';pc.style.display='none';document.body.appendChild(pc);}
   pc.innerHTML=html;
   window.print();
+}
+
+// ============================================================
+// WHATSAPP NOTIFICATION
+// ============================================================
+function enviarWhatsApp() {
+  var f  = currentForm;
+  var fk = currentInspType ? currentInspType.formKey : '';
+
+  // Datos generales
+  var fechaEl = document.getElementById('datos-fecha');
+  var fecha = fechaEl ? fechaEl.value : '';
+  // Formatear fecha dd/mm/yyyy
+  if(fecha && fecha.indexOf('-') > -1) {
+    var p = fecha.split('-');
+    fecha = p[2]+'/'+p[1]+'/'+p[0];
+  }
+
+  var dv = {};
+  if(f.datosExtras) f.datosExtras.forEach(function(d){
+    var el = document.getElementById('datos-'+d.id);
+    if(el) dv[d.id] = el.value||'';
+  });
+
+  var placa     = dv.placas || dv.codigo || '—';
+  var tipoveh   = dv.tipoveh || dv.tipoGrua || '—';
+  var conductor = dv.conductor || dv.operador || '—';
+  var lugar     = dv.lugar || dv.lugarInsp || '—';
+  var codigo    = f.code || '';
+
+  var estado = inspStatus || '---';
+
+  // Conteo C/NC/NA (de ítems normales)
+  var c=0, nc=0, na=0;
+  var ncItems = [];
+  f.tabs.forEach(function(tab){
+    if(tab.isArnes||tab.isAmarre||tab.isManguera||tab.isKitDetallado||tab.isParam) return;
+    (tab.items||[]).forEach(function(item, ii){
+      var id = uid(tab.name, ii);
+      var st = ST[id]||{};
+      if(!st.val) return;
+      if(st.val==='C') c++;
+      else if(st.val==='NC'){
+        nc++;
+        var acFinal = '';
+        if(st.ac === 'Otra (especificar)') acFinal = st.acOther || '';
+        else acFinal = st.ac || '';
+        ncItems.push({l:item.l, sec:tab.name, ac:acFinal});
+      }
+      else na++;
+    });
+  });
+
+  // Novedades adicionales (texto)
+  var novEl = document.getElementById('novedades-extra');
+  var novText = novEl ? (novEl.value||'').trim() : '';
+
+  // Construir mensaje
+  var msg = '';
+  msg += '*HSE Dayuma Truck S.A.*\n';
+  msg += 'Fecha: ' + fecha + ' | ' + codigo + '\n\n';
+  msg += 'Placa: ' + placa + '\n';
+  msg += 'Vehiculo: ' + tipoveh + '\n';
+  msg += 'Conductor: ' + conductor + '\n';
+  msg += 'Lugar: ' + lugar + '\n\n';
+  msg += 'Estado: *' + estado + '*\n\n';
+  msg += 'Cumple: ' + c + ' | No cumple: ' + nc + ' | No aplica: ' + na + '\n';
+
+  if(ncItems.length > 0){
+    msg += '\n*No conformidades:*\n';
+    var mostrar = ncItems.slice(0, 5);
+    mostrar.forEach(function(it){
+      msg += '- ' + it.sec + ': ' + it.l + '\n';
+      if(it.ac) msg += '  Accion: ' + it.ac + '\n';
+    });
+    if(ncItems.length > 5){
+      msg += '- ...y ' + (ncItems.length - 5) + ' mas\n';
+    }
+  }
+
+  if(novText){
+    msg += '\n*Novedades adicionales:*\n' + novText + '\n';
+  }
+
+  var url = 'https://wa.me/?text=' + encodeURIComponent(msg);
+  window.open(url, '_blank');
 }
 
 // ============================================================
