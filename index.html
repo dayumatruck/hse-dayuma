@@ -5105,26 +5105,59 @@ function enviarWhatsApp() {
 
   var estado = inspStatus || '---';
 
-  // Conteo C/NC/NA (de ítems normales)
+  // Conteo según tipo de formulario
   var c=0, nc=0, na=0;
   var ncItems = [];
-  f.tabs.forEach(function(tab){
-    if(tab.isArnes||tab.isAmarre||tab.isManguera||tab.isKitDetallado||tab.isParam) return;
-    (tab.items||[]).forEach(function(item, ii){
-      var id = uid(tab.name, ii);
-      var st = ST[id]||{};
-      if(!st.val) return;
-      if(st.val==='C') c++;
-      else if(st.val==='NC'){
-        nc++;
-        var acFinal = '';
-        if(st.ac === 'Otra (especificar)') acFinal = st.acOther || '';
-        else acFinal = st.ac || '';
-        ncItems.push({l:item.l, sec:tab.name, ac:acFinal});
-      }
-      else na++;
+  var bueno=0, regular=0, malo=0;
+  var malosItems = [];
+  var esEquipo = (fk==='hse42'||fk==='hse43'||fk==='hse86');
+
+  if(esEquipo){
+    if(fk==='hse42'){
+      f.tabs.forEach(function(tab){
+        if(!tab.isArnes) return;
+        var tabIdx = f.tabs.indexOf(tab)+1;
+        (tab.arneses||[{num:1},{num:2},{num:3},{num:4}]).forEach(function(ar){
+          var arId='arnes_'+tabIdx+'_'+ar.num;
+          var st=ST[arId]||{};
+          var cols=st.cols||{};
+          var vals=Object.values(cols).filter(function(v){return v&&v!=='N/A'&&v!=='N/D';});
+          if(vals.length===0) return;
+          var estadoGen = vals.some(function(v){return v==='M';}) ? 'MALO'
+            : vals.some(function(v){return v==='R';}) ? 'REGULAR' : 'BUENO';
+          if(estadoGen==='BUENO') bueno++;
+          else if(estadoGen==='REGULAR'){ regular++; malosItems.push({codigo:st.codigo||'Arnes '+(ar.num), estado:'REGULAR'}); }
+          else { malo++; malosItems.push({codigo:st.codigo||'Arnes '+(ar.num), estado:'MALO'}); }
+        });
+      });
+    } else {
+      f.tabs.forEach(function(tab){
+        if(!tab.isAmarre && !tab.isManguera) return;
+        var tabIdx = f.tabs.indexOf(tab)+1;
+        var aST = tab.isAmarre ? (ST['amarre_'+tabIdx]||{}) : (ST['manguera_'+tabIdx]||{});
+        (aST.items||[]).forEach(function(it){
+          if(it.estado==='BUENO') bueno++;
+          else if(it.estado==='MALO'){ malo++; malosItems.push({codigo:it.codigo||'Item', estado:'MALO'}); }
+        });
+      });
+    }
+  } else {
+    f.tabs.forEach(function(tab){
+      if(tab.isArnes||tab.isAmarre||tab.isManguera||tab.isKitDetallado||tab.isParam) return;
+      (tab.items||[]).forEach(function(item, ii){
+        var id = uid(tab.name, ii);
+        var st = ST[id]||{};
+        if(!st.val) return;
+        if(st.val==='C') c++;
+        else if(st.val==='NC'){
+          nc++;
+          var acFinal = st.ac==='Otra (especificar)' ? (st.acOther||'') : (st.ac||'');
+          ncItems.push({l:item.l, sec:tab.name, ac:acFinal});
+        }
+        else na++;
+      });
     });
-  });
+  }
 
   // Novedades adicionales (texto)
   var novEl = document.getElementById('novedades-extra');
@@ -5136,26 +5169,34 @@ function enviarWhatsApp() {
   msg += 'Fecha: ' + fecha + ' | ' + codigo + '\n\n';
   msg += 'Placa: ' + placa + '\n';
   msg += 'Vehiculo: ' + tipoveh + '\n';
-  msg += 'Conductor: ' + conductor + '\n';
+  if(conductor && conductor !== '—') msg += 'Conductor: ' + conductor + '\n';
   msg += 'Lugar: ' + lugar + '\n\n';
   msg += 'Estado: *' + estado + '*\n\n';
-  msg += 'Cumple: ' + c + ' | No cumple: ' + nc + ' | No aplica: ' + na + '\n';
 
-  if(ncItems.length > 0){
-    msg += '\n*No conformidades:*\n';
-    var mostrar = ncItems.slice(0, 5);
-    mostrar.forEach(function(it){
-      msg += '- ' + it.sec + ': ' + it.l + '\n';
-      if(it.ac) msg += '  Accion: ' + it.ac + '\n';
-    });
-    if(ncItems.length > 5){
-      msg += '- ...y ' + (ncItems.length - 5) + ' mas\n';
+  if(esEquipo){
+    msg += 'Bueno: ' + bueno;
+    if(fk==='hse42') msg += ' | Regular: ' + regular;
+    msg += ' | Malo: ' + malo + '\n';
+    if(malosItems.length > 0){
+      msg += '\n*Equipos con novedad:*\n';
+      malosItems.slice(0,5).forEach(function(it){
+        msg += '- ' + it.codigo + ' (' + it.estado + ')\n';
+      });
+      if(malosItems.length > 5) msg += '- ...y ' + (malosItems.length-5) + ' mas\n';
+    }
+  } else {
+    msg += 'Cumple: ' + c + ' | No cumple: ' + nc + ' | No aplica: ' + na + '\n';
+    if(ncItems.length > 0){
+      msg += '\n*No conformidades:*\n';
+      ncItems.slice(0,5).forEach(function(it){
+        msg += '- ' + it.sec + ': ' + it.l + '\n';
+        if(it.ac) msg += '  Accion: ' + it.ac + '\n';
+      });
+      if(ncItems.length > 5) msg += '- ...y ' + (ncItems.length-5) + ' mas\n';
     }
   }
 
-  if(novText){
-    msg += '\n*Novedades adicionales:*\n' + novText + '\n';
-  }
+  if(novText) msg += '\n*Novedades adicionales:*\n' + novText + '\n';
 
   var url = 'https://wa.me/?text=' + encodeURIComponent(msg);
   window.open(url, '_blank');
