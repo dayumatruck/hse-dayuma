@@ -486,8 +486,9 @@ hse16: {
   version: '5.0',
   fecha: '24/10/2025',
   datosExtras: [
-    {id:'placas', label:'Placas', type:'text', placeholder:'Ej: PAB5413'},
     {id:'tipoveh', label:'Tipo de Vehículo', type:'select', options:['Cama Alta','Cama Baja','GH']},
+
+    {id:'placas', label:'Placas', type:'text', placeholder:'Ej: PAB5413'},
     {id:'marca', label:'Marca y Año', type:'text', placeholder:'Ej: Hino 2019'},
     {id:'km', label:'KM Actual', type:'number', placeholder:'Ej: 153680'},
     {id:'conductor', label:'Nombre del Conductor', type:'text', placeholder:'Nombre completo'},
@@ -758,8 +759,9 @@ hse16shaya: {
   version: '5.0',
   fecha: '24/10/2025',
   datosExtras: [
-    {id:'placas',      label:'Placas',               type:'text',   placeholder:'Ej: PAB5413'},
     {id:'tipoveh',     label:'Tipo de Vehículo',     type:'select', options:['Cama Alta SHAYA']},
+
+    {id:'placas',      label:'Placas',               type:'text',   placeholder:'Ej: PAB5413'},
     {id:'marca',       label:'Marca y Año',          type:'text',   placeholder:'Ej: Hino 2019'},
     {id:'km',          label:'KM Actual',            type:'number', placeholder:'Ej: 153680'},
     {id:'conductor',   label:'Nombre del Conductor', type:'text',   placeholder:'Nombre completo'},
@@ -1031,8 +1033,9 @@ hse18: {
   version: '4.0',
   fecha: '10/06/2024',
   datosExtras: [
-    {id:'placas',      label:'Placas',              type:'text',   placeholder:'Ej: PAB5413'},
     {id:'tipoveh',     label:'Tipo de Vehículo',    type:'select', options:['Vacuum','Tanquero','Volqueta']},
+
+    {id:'placas',      label:'Placas',              type:'text',   placeholder:'Ej: PAB5413'},
     {id:'marca',       label:'Marca',               type:'text',   placeholder:'Ej: Hino'},
     {id:'km',          label:'KM Actual',           type:'number', placeholder:'Ej: 153680'},
     {id:'conductor',   label:'Nombre del Conductor',type:'text',   placeholder:'Nombre completo'},
@@ -1346,8 +1349,9 @@ hse46: {
   version: '1.0',
   fecha: '07/05/2024',
   datosExtras: [
-    {id:'placas',      label:'Placas',               type:'text',   placeholder:'Ej: GBA1234'},
     {id:'tipoveh',     label:'Tipo de Vehículo',     type:'text',   placeholder:'Ej: Camioneta, Jeep'},
+
+    {id:'placas',      label:'Placas',               type:'text',   placeholder:'Ej: GBA1234'},
     {id:'marca',       label:'Marca y Año',          type:'text',   placeholder:'Ej: Toyota 2020'},
     {id:'km',          label:'KM Actual',            type:'number', placeholder:'Ej: 85400'},
     {id:'conductor',   label:'Nombre del Conductor', type:'text',   placeholder:'Nombre completo'},
@@ -2340,8 +2344,9 @@ hse43: {
   version: '4.0',
   fecha: '15/08/2024',
   datosExtras: [
-    {id:'placas',    label:'Placa',               type:'text', placeholder:'Ej: QAA1545'},
     {id:'tipoveh',   label:'Tipo de Vehículo',    type:'select', options:['Cama Alta','Cama Baja','GH','Grúa Móvil','Hidrogrúa','Otro']},
+
+    {id:'placas',    label:'Placa',               type:'text', placeholder:'Ej: QAA1545'},
     {id:'conductor', label:'Nombre del Conductor',type:'text', placeholder:'Nombre completo'},
     {id:'lugar',     label:'Lugar de Inspección', type:'select', options:['DYT - Coca','SHAYA','ORION','ANDES','ENAP','PCR','FRONTERA','GRAN TIERRA','PETROBELL','CSSFD']},
   ],
@@ -2393,8 +2398,9 @@ hse86: {
   version: '1.0',
   fecha: '21/04/2026',
   datosExtras: [
-    {id:'placas',    label:'Placa',               type:'text',   placeholder:'Ej: QAA1545'},
     {id:'tipoveh',   label:'Tipo de Vehículo',    type:'select', options:['Vacuum']},
+
+    {id:'placas',    label:'Placa',               type:'text',   placeholder:'Ej: QAA1545'},
     {id:'conductor', label:'Nombre del Conductor',type:'text',   placeholder:'Nombre completo'},
     {id:'lugar',     label:'Lugar de Inspección', type:'select', options:['DYT - Coca','SHAYA','ORION','ANDES','ENAP','PCR','FRONTERA','GRAN TIERRA','PETROBELL','CSSFD']},
   ],
@@ -3772,7 +3778,7 @@ function setStatus(v){
 }
 
 // URL del Apps Script — pegar aquí después de publicar
-var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzt46CECFqegrrsnVba7m1KMZDWb5cZ_qpm_cnsAd8apgB9TCA-X6azs1Z8o1WEXmcTXw/exec';
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxOtGCnC-nadK6VAv1LwrEmmt_YeCzSot93a6Z8aWZGtWw03VkHSx2J9O-XHz9KsE-CKg/exec';
 
 function submitInspection(){
   if(!inspStatus){alert('Por favor selecciona el estado de la unidad.');return;}
