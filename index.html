@@ -5219,12 +5219,47 @@ function enviarWhatsApp() {
     msg += 'Bueno: ' + bueno;
     if(fk==='hse42') msg += ' | Regular: ' + regular;
     msg += ' | Malo: ' + malo + '\n';
-    if(malosItems.length > 0){
-      msg += '\n*Equipos con novedad:*\n';
-      malosItems.slice(0,5).forEach(function(it){
-        msg += '- ' + it.codigo + ' (' + it.estado + ')\n';
+
+    if(fk==='hse42'){
+      // Desglose por ítem — solo los que tienen R o M
+      var COLS_WA = ['Etiqueta','Tirantes','Anillo D','Banda Subglu tea','Banda de Muslo','Prot. Espalda','Absorbedor','Ganchos'];
+      var lineasArnes = [];
+      f.tabs.forEach(function(tab){
+        if(!tab.isArnes) return;
+        var tabIdx = f.tabs.indexOf(tab)+1;
+        (tab.arneses||[{num:1},{num:2},{num:3},{num:4}]).forEach(function(ar){
+          var arId='arnes_'+tabIdx+'_'+ar.num;
+          var st=ST[arId]||{};
+          var cols=st.cols||{};
+          var valsEf = Object.values(cols).filter(function(v){return v==='B'||v==='R'||v==='M';});
+          if(valsEf.length===0) return;
+          var estadoGen = valsEf.some(function(v){return v==='M';}) ? 'MALO'
+            : valsEf.some(function(v){return v==='R';}) ? 'REGULAR' : 'BUENO';
+          if(estadoGen==='BUENO') return; // solo mostrar con novedad
+          var linea = 'Item '+ar.num+(st.codigo?' ('+st.codigo+')':'')+': '+estadoGen+'\n';
+          // componentes con R o M
+          var detalle = [];
+          ['Etiqueta','Tirantes','Anillo D','Banda Subglutea','Banda de Muslo','Protector de Espalda','Absorbedor de Impacto','Ganchos'].forEach(function(col){
+            var v = cols[col]||'';
+            if(v==='R'||v==='M') detalle.push(col+': '+v);
+          });
+          if(detalle.length) linea += '  ' + detalle.join(' | ') + '\n';
+          lineasArnes.push(linea);
+        });
       });
-      if(malosItems.length > 5) msg += '- ...y ' + (malosItems.length-5) + ' mas\n';
+      if(lineasArnes.length > 0){
+        msg += '\n*Arneses con novedad:*\n';
+        lineasArnes.forEach(function(l){ msg += l; });
+      }
+    } else {
+      // HSE-43 y HSE-86: solo los MALO
+      if(malosItems.length > 0){
+        msg += '\n*Equipos con novedad:*\n';
+        malosItems.slice(0,5).forEach(function(it){
+          msg += '- ' + it.codigo + ' (MALO)\n';
+        });
+        if(malosItems.length > 5) msg += '- ...y ' + (malosItems.length-5) + ' mas\n';
+      }
     }
   } else {
     msg += 'Cumple: ' + c + ' | No cumple: ' + nc + ' | No aplica: ' + na + '\n';
